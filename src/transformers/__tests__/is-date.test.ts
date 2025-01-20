@@ -81,4 +81,33 @@ describe('IsDate', () => {
         });
         expect(obj).toHaveProperty('property', value);
     });
+    it('converts single items to arrays if isArray is true', () => {
+        class Fixture {
+            @IsDate({
+                isArray: true,
+            })
+            property!: Date[];
+        }
+
+        const value = new Date();
+        const obj = plainToClass(Fixture, {
+            property: value,
+        });
+        expect(obj).toHaveProperty('property', [value]);
+    });
+    it('handles multiple values if isArray is true', () => {
+        class Fixture {
+            @IsDate({
+                isArray: true,
+            })
+            property!: Date[];
+        }
+
+        const value1 = new Date();
+        const value2 = new Date();
+        const obj = plainToClass(Fixture, {
+            property: [value1, value2],
+        });
+        expect(obj).toHaveProperty('property', [value1, value2]);
+    });
 });

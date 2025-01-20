@@ -79,4 +79,30 @@ describe('IsNumber', () => {
         });
         expect(obj).toHaveProperty('property', 42.1);
     });
+    it('converts single items to arrays if isArray is true', () => {
+        class Fixture {
+            @IsNumber({
+                isArray: true,
+            })
+            property!: number[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: 42.1,
+        });
+        expect(obj).toHaveProperty('property', [42.1]);
+    });
+    it('handles multiple values if isArray is true', () => {
+        class Fixture {
+            @IsNumber({
+                isArray: true,
+            })
+            property!: number[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: [42.1, 42.2],
+        });
+        expect(obj).toHaveProperty('property', [42.1, 42.2]);
+    });
 });

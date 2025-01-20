@@ -79,4 +79,32 @@ describe('IsNested', () => {
         });
         expect(obj).toHaveProperty('property', {});
     });
+    it('converts single items to arrays if isArray is true', () => {
+        class Fixture {
+            @IsNested({
+                isArray: true,
+                type: Child,
+            })
+            property!: Child[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: {},
+        });
+        expect(obj).toHaveProperty('property', [{}]);
+    });
+    it('handles multiple values if isArray is true', () => {
+        class Fixture {
+            @IsNested({
+                isArray: true,
+                type: Child,
+            })
+            property!: Child[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: [{}, {}],
+        });
+        expect(obj).toHaveProperty('property', [{}, {}]);
+    });
 });

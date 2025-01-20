@@ -68,4 +68,30 @@ describe('IsUUID', () => {
         });
         expect(obj).toHaveProperty('property', '00000000-0000-4000-8000-000000000000');
     });
+    it('converts single items to arrays if isArray is true', () => {
+        class Fixture {
+            @IsUUID({
+                isArray: true,
+            })
+            property!: string[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: '00000000-0000-4000-8000-000000000000',
+        });
+        expect(obj).toHaveProperty('property', ['00000000-0000-4000-8000-000000000000']);
+    });
+    it('handles multiple values if isArray is true', () => {
+        class Fixture {
+            @IsUUID({
+                isArray: true,
+            })
+            property!: string[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: ['00000000-0000-4000-8000-000000000000'],
+        });
+        expect(obj).toHaveProperty('property', ['00000000-0000-4000-8000-000000000000']);
+    });
 });

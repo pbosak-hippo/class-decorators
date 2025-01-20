@@ -82,4 +82,32 @@ describe('IsEnum', () => {
         });
         expect(obj).toHaveProperty('property', FixtureEnum.Foo);
     });
+    it('converts single items to arrays if isArray is true', () => {
+        class Fixture {
+            @IsEnum({
+                enum: FixtureEnum,
+                isArray: true,
+            })
+            property!: string[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: FixtureEnum.Foo,
+        });
+        expect(obj).toHaveProperty('property', [FixtureEnum.Foo]);
+    });
+    it('handles multiple values if isArray is true', () => {
+        class Fixture {
+            @IsEnum({
+                enum: FixtureEnum,
+                isArray: true,
+            })
+            property!: string[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: [FixtureEnum.Foo, FixtureEnum.Bar],
+        });
+        expect(obj).toHaveProperty('property', [FixtureEnum.Foo, FixtureEnum.Bar]);
+    });
 });

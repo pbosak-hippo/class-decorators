@@ -68,4 +68,30 @@ describe('IsString', () => {
         });
         expect(obj).toHaveProperty('property', 'value');
     });
+    it('converts single items to arrays if isArray is true', () => {
+        class Fixture {
+            @IsString({
+                isArray: true,
+            })
+            property!: string[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: 'value',
+        });
+        expect(obj).toHaveProperty('property', ['value']);
+    });
+    it('handles multiple values if isArray is true', () => {
+        class Fixture {
+            @IsString({
+                isArray: true,
+            })
+            property!: string[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: ['value1', 'value2'],
+        });
+        expect(obj).toHaveProperty('property', ['value1', 'value2']);
+    });
 });

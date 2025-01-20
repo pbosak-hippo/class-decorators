@@ -112,4 +112,30 @@ describe('IsBoolean', () => {
         });
         expect(obj).toHaveProperty('property', false);
     });
+    it('converts single items to arrays if isArray is true', () => {
+        class Fixture {
+            @IsBoolean({
+                isArray: true,
+            })
+            property!: boolean[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: 'true',
+        });
+        expect(obj).toHaveProperty('property', [true]);
+    });
+    it('handles multiple values if isArray is true', () => {
+        class Fixture {
+            @IsBoolean({
+                isArray: true,
+            })
+            property!: boolean[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: ['true', 'false'],
+        });
+        expect(obj).toHaveProperty('property', [true, false]);
+    });
 });

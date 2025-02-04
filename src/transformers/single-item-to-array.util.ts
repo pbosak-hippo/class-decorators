@@ -1,22 +1,18 @@
 import { TransformFnParams } from 'class-transformer';
 
 /**
- * If decorated property is expected to be an array, ensure that the value is an array.
- * The issue with sending arrays in query parameters is that if there is only one item
- * in the array, it is accepted that the query just contains a single key-value pair, and
- * it's a server implementation detail to interpret the value as an array.
+ * If a decorated property is expected to be an array, ensure that the value is an array.
+ * 
+ * There are (at least) two different ways of specifying arrays via query parameters,
+ * depending on the server implementation: 
+ *  * use array syntax to explicitly indicate that a query parameter value is an array (e.g. `?foo[]=bar`)
+ *      * this syntax is not common.
+ *  * repeat the key parameter for each array item (e.g. `?foo=bar&foo=baz`)
+ *    * If the key parameter is specified only once, this will result in the parameter being specified as a
+         single item, and not an array
  *
- * Sometimes queries explicitly use array syntax, to explicitly indicate that the value
- * is an array item, and should be interpreted as an array, but that practice is not common.
- *
- * For example, `?foo[]=bar` is explicitly an array, while `?foo=bar` can be interpreted
- * as an array, if the key appears multiple times, like `?foo=bar&foo=baz` or as a single
- * item if the key appears only once, like `?foo=bar`. The server implementation should
- * interpret the value according to the API specification.
- *
- * Common tools like Swagger UI and Postman will not send the array syntax, so we need to
- * convert single items to arrays where we expect arrays to be received, otherwise the value
- * will be interpreted as a single item and result in a validation error.
+ * What this means is that we need to perform an additional transformation to ensure that a query
+ * param is properly interpreted as an array when only a single item is provided.
  * */
 export const singleItemToArray = ({
     value,

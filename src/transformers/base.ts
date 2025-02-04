@@ -1,6 +1,6 @@
 import { BaseOptions } from '@hippo-oss/dto-decorators';
 import { Expose, Transform, TransformFnParams } from 'class-transformer';
-import { singleItemToArray } from './single-item-to-array.util';
+import { singleItemToArray } from './single-item-to-array';
 
 /* Create decorators for common options.
  */

@@ -6,9 +6,8 @@ import { createBasePropertyDecorators } from './base';
 /**
  * Converts unknown to boolean using either a case-insensitive comparison to 'false' and '0' for false
  * or falling back to native conversion.
- * @param originalValue
  */
-const inferBoolean = (originalValue: unknown): boolean | null | undefined => {
+const inferBoolean = (originalValue: unknown, coercedValue: boolean): boolean | null | undefined => {
     if (originalValue === undefined || originalValue === null) {
         return originalValue;
     }
@@ -23,8 +22,8 @@ const inferBoolean = (originalValue: unknown): boolean | null | undefined => {
         }
     }
 
-    // Fallback to default boolean conversion
-    return Boolean(originalValue);
+    // Fallback to already coerced value
+    return coercedValue;
 };
 
 export function IsBoolean(options: IsBooleanOptions = {}): PropertyDecorator {
@@ -40,7 +39,7 @@ export function IsBoolean(options: IsBooleanOptions = {}): PropertyDecorator {
         Type(() => Boolean),
 
         // convert 'false' and '0' to false
-        Transform(({ obj, key }: TransformFnParams): unknown => {
+        Transform(({ obj, key, value: coercedValue }: TransformFnParams): unknown => {
             /* NB: by the time this function is called, the @Type() decorator will have already converted
              * the orginal value to boolean, so we must recover the original value; in additional, decorator
              * order has no impact on this behavior because class-transformer saves decorator logic as
@@ -50,11 +49,13 @@ export function IsBoolean(options: IsBooleanOptions = {}): PropertyDecorator {
             const originalValue = obj[key] as unknown;
 
             // Handle arrays
-            if (options.isArray && Array.isArray(originalValue)) {
-                return originalValue.map(inferBoolean);
+            if (options.isArray && Array.isArray(originalValue) && Array.isArray(coercedValue)) {
+                return originalValue.map(
+                    (originalValueItem, index) => inferBoolean(originalValueItem, (coercedValue as boolean[])[index]),
+                );
             }
 
-            return inferBoolean(originalValue);
+            return inferBoolean(originalValue, coercedValue as boolean);
         }),
     ]);
 }

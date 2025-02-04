@@ -124,6 +124,33 @@ describe('IsBoolean', () => {
             property: 'true',
         });
         expect(obj).toHaveProperty('property', [true]);
+
+        // for single item
+        const obj2 = plainToClass(Fixture, {
+            property: 'false',
+        });
+        expect(obj2).toHaveProperty('property', [false]);
+
+        const obj3 = plainToClass(Fixture, {
+            property: 'true',
+        });
+        expect(obj3).toHaveProperty('property', [true]);
+
+        const obj4 = plainToClass(Fixture, {
+            property: '0',
+        });
+        expect(obj4).toHaveProperty('property', [false]);
+
+        const obj5 = plainToClass(Fixture, {
+            property: 'yes',
+        });
+        expect(obj5).toHaveProperty('property', [true]);
+
+        const obj6 = plainToClass(Fixture, {
+            property: '',
+        });
+        expect(obj6).toHaveProperty('property', [false]);
+
     });
     it('handles multiple values if isArray is true', () => {
         class Fixture {
@@ -134,9 +161,35 @@ describe('IsBoolean', () => {
         }
 
         const obj = plainToClass(Fixture, {
-            property: ['true', 'false'],
+            property: ['true', 'false', '', '0', 'yes'],
         });
-        expect(obj).toHaveProperty('property', [true, false]);
+        expect(obj).toHaveProperty('property', [true, false, false, false, true]);
+
+        // for array with single item
+        const obj2 = plainToClass(Fixture, {
+            property: ['false'],
+        });
+        expect(obj2).toHaveProperty('property', [false]);
+
+        const obj3 = plainToClass(Fixture, {
+            property: ['true'],
+        });
+        expect(obj3).toHaveProperty('property', [true]);
+
+        const obj4 = plainToClass(Fixture, {
+            property: ['0'],
+        });
+        expect(obj4).toHaveProperty('property', [false]);
+
+        const obj5 = plainToClass(Fixture, {
+            property: ['yes'],
+        });
+        expect(obj5).toHaveProperty('property', [true]);
+
+        const obj6 = plainToClass(Fixture, {
+            property: [''],
+        });
+        expect(obj6).toHaveProperty('property', [false]);
     });
     it('returns null if isArray and nullable options are true', () => {
         class Fixture {

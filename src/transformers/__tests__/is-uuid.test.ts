@@ -94,4 +94,53 @@ describe('IsUUID', () => {
         });
         expect(obj).toHaveProperty('property', ['00000000-0000-4000-8000-000000000000']);
     });
+    it('returns null if isArray and nullable options are true', () => {
+        class Fixture {
+            @IsUUID({
+                isArray: true,
+                nullable: true,
+            })
+            property!: string[] | null;
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: null,
+        });
+        expect(obj).toHaveProperty('property', null);
+    });
+
+    it('returns undefined if isArray and optional are true ', () => {
+        class Fixture {
+            @IsUUID({
+                isArray: true,
+                optional: true,
+            })
+            property?: string[];
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: undefined,
+        });
+        expect(obj).toHaveProperty('property', undefined);
+    });
+    it('returns null or undefined if isArray, nullable and optional are true ', () => {
+        class Fixture {
+            @IsUUID({
+                isArray: true,
+                optional: true,
+                nullable: true,
+            })
+            property?: string[] | null;
+        }
+
+        const obj = plainToClass(Fixture, {
+            property: undefined,
+        });
+        expect(obj).toHaveProperty('property', undefined);
+
+        const obj2 = plainToClass(Fixture, {
+            property: null,
+        });
+        expect(obj2).toHaveProperty('property', null);
+    });
 });
